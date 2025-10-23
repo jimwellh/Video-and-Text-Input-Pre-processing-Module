@@ -1,0 +1,11 @@
+# requirements.txt
+fastapi
+uvicorn[standard]     # The server that runs FastAPI
+python-multipart      # For file uploads
+transformers
+torch                 # A dependency for transformers/demucs
+demucs
+opencv-python
+librosa
+soundfile
+numpy

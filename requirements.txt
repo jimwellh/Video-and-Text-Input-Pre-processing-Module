@@ -5,6 +5,7 @@ python-multipart      # For file uploads
 transformers
 torch                 # A dependency for transformers/demucs
 demucs
+torchcodec
 opencv-python
 librosa
 soundfile

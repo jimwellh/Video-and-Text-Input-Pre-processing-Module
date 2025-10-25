@@ -48,7 +48,7 @@ def extract_audio_ffmpeg(video_path: str, audio_output_path: str) -> bool:
         return False
 
 # ---
-# 2. Module A(2): Vocal Separation via Demucs (MODIFIED)
+# 2. Module A(2): Vocal Separation via Demucs 
 # ---
 def separate_vocals_demucs(audio_path: str, output_dir: str) -> dict:
     """
@@ -68,7 +68,7 @@ def separate_vocals_demucs(audio_path: str, output_dir: str) -> dict:
     try:
         # Run demucs
         # NOTE: If it fails again, remove stdout/stderr to see the full error log
-        subprocess.run(command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(command, check=True, capture_output=True, text=True)
 
         # Demucs creates a subfolder structure: [output_dir]/[model_name]/[audio_filename_base]/
         audio_filename_base = os.path.splitext(os.path.basename(audio_path))[0]
@@ -87,9 +87,14 @@ def separate_vocals_demucs(audio_path: str, output_dir: str) -> dict:
         else:
             print(f"[ERROR] Demucs ran, but 'vocals.wav' is missing from '{demucs_out_folder}'.")
             return None
-
     except subprocess.CalledProcessError as e:
-        print(f"[ERROR] Demucs separation failed: {e}")
+        print(f"[ERROR] Demucs separation failed. Command: {e.cmd}")
+        print(f"[ERROR] Demucs return code: {e.returncode}")
+        print(f"------------------- Demucs stdout -------------------")
+        print(e.stdout)
+        print(f"------------------- Demucs stderr (THE REAL ERROR) -------------------")
+        print(e.stderr) 
+        print(f"-----------------------------------------------------------------")
         return None
     except FileNotFoundError:
         print("[ERROR] Demucs not found. Please ensure it is installed (`pip install demucs`).")

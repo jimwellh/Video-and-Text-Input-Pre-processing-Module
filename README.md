@@ -28,18 +28,18 @@ docker build -t video-preprocessor .
 This will take several minutes as it installs ffmpeg, torch, demucs, and torchcodec.
 2. Run the Docker Container: To run with GPU acceleration (recommended):
 ```
-docker run -d -p 8000:8000 --gpus=all --name vlook_preprocessor video-preprocessor
+docker run -d -p 8001:8001 --gpus=all --name vlook_preprocessor video-preprocessor
 ```
 If you do not have an NVIDIA GPU, you can run it on the CPU, but it will be very slow:
 ```
-docker run -d -p 8000:8000 --name vlook_preprocessor video-preprocessor
+docker run -d -p 8001:8001 --name vlook_preprocessor video-preprocessor
 ```
 3. Check Service Startup: The service must download and load the large Whisper model on its first run. This can take 5-10 minutes. You can watch the progress in real-time:
 ```
 docker logs -f vlook_preprocessor
 ```
 Do not proceed until you see the log INFO: Application startup complete.
-4. Verify Service: Once startup is complete, open your browser to http://localhost:8000/docs. You will see the FastAPI interactive (Swagger) documentation.
+4. Verify Service: Once startup is complete, open your browser to http://localhost:8001/docs. You will see the FastAPI interactive (Swagger) documentation.
 
 ## API Usage
 This service provides one main endpoint.
@@ -52,7 +52,7 @@ This is the primary endpoint for processing a video.
 
 * `curl` Example:
 ```
-curl -X POST "http://localhost:8000/preprocess-video/" \
+curl -X POST "http://localhost:8001/preprocess-video/" \
      -H "accept: application/json" \
      -H "Content-Type: multipart/form-data" \
      -F "file=@/path/to/your/house_tour.mp4"
@@ -78,7 +78,7 @@ As shown in the VRLook Software Flow, this module's outputs are the direct input
 Your LLM service (the next module you build) will act as an HTTP client. When it needs to process a video, it will perform the following steps:
 
 1. Read the source video file (e.g., house_tour.mp4).
-2. Make an HTTP POST request to this pre-processing service (which is running at http://vlook_preprocessor:8000/preprocess-video/). Note: When services are in the same Docker network, you should use the container name (vlook_preprocessor) as the hostname instead of localhost.
+2. Make an HTTP POST request to this pre-processing service (which is running at http://vlook_preprocessor:8001/preprocess-video/). Note: When services are in the same Docker network, you should use the container name (vlook_preprocessor) as the hostname instead of localhost.
 3. Send the video file as multipart/form-data.
 4. Receive the JSON response (shown above).
 5. Use the JSON data to feed the LLM.
@@ -102,7 +102,7 @@ video_file_path = "path/to/my_house_tour.mp4"
 # This is the URL of your pre-processing service
 # Use the Docker container name if running in a shared Docker network
 # Use localhost if testing from your host machine
-PREPROCESSOR_URL = "http://localhost:8000/preprocess-video/"
+PREPROCESSOR_URL = "http://localhost:8001/preprocess-video/"
 
 # Open the video file in binary-read mode
 with open(video_file_path, "rb") as f:

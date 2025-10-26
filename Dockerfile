@@ -23,5 +23,5 @@ COPY ./app /app/app
 
 # 4. Set the command to run your application
 # This tells Docker to run Uvicorn, pointing it to the 'app' object in 'app.main'
-# It will be accessible on port 8000 inside the container
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# It will be accessible on port 8001 inside the container
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
